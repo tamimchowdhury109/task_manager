@@ -22,24 +22,27 @@ class TaskManager extends StatelessWidget {
               borderRadius: BorderRadius.circular(5)),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8)
-            ),
-            backgroundColor: AppColors.themeColor,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          )
-        ),
+            style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          backgroundColor: AppColors.themeColor,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        )),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-              foregroundColor: Colors.green,
-              textStyle: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+            foregroundColor: Colors.green,
+            textStyle: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        )
+        ),
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }

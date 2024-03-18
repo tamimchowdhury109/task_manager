@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:task_manager/presentation/screens/sign_up_screen.dart';
 import 'package:task_manager/presentation/utility/assets_path.dart';
 import 'package:task_manager/presentation/widgets/background_widget.dart';
 
@@ -30,13 +31,11 @@ class _SignInScreenState extends State<SignInScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 100),
-                const Text(
+                Text(
                   "Get started with",
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(context).textTheme.titleLarge
                 ),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _emailTEController,
                   keyboardType: TextInputType.emailAddress,
@@ -86,7 +85,9 @@ class _SignInScreenState extends State<SignInScreen> {
                         onPressed: (){},
                         child: const Text("Don't have a account?")),
                     TextButton(
-                        onPressed: (){},
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpScreen()));
+                        },
                         child: const Text("Sign up")),
                   ],
                 )
