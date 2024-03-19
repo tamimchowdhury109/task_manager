@@ -1,20 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/presentation/screens/pin_verification_screen.dart';
-import 'package:task_manager/presentation/screens/sign_in_screen.dart';
-import 'package:task_manager/presentation/screens/sign_up_screen.dart';
+import 'package:task_manager/presentation/screens/auth/email_verification_screen.dart';
+import 'package:task_manager/presentation/screens/auth/sign_in_screen.dart';
 import 'package:task_manager/presentation/widgets/background_widget.dart';
 
-class EmailVerificationScreen extends StatefulWidget {
-  const EmailVerificationScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<EmailVerificationScreen> createState() => _EmailVerificationScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
 
   final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _firstNameTEController = TextEditingController();
+  final TextEditingController _lastNameTEController = TextEditingController();
+  final TextEditingController _mobileNumberTEController = TextEditingController();
+  final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -31,15 +34,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   children: [
                     const SizedBox(height: 100),
                     Text(
-                        "Your Email Address",
+                        "Join With Us",
                         style: Theme.of(context).textTheme.titleLarge
                     ),
-                    const SizedBox(height: 10),
-                    const Text(
-                        "A 6 digit verification pin will send to your email address",style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 15,
-                    ),),
                     const SizedBox(height: 20),
                     TextFormField(
                       controller: _emailTEController,
@@ -48,17 +45,47 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                         hintText: 'Email',
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _firstNameTEController,
+                      decoration: const InputDecoration(
+                        hintText: 'First Name',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _lastNameTEController,
+                      decoration: const InputDecoration(
+                        hintText: 'Last Name',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _mobileNumberTEController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        hintText: 'Mobile',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _passwordTEController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        hintText: 'Password',
+                      ),
+                    ),
                     const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PinVerificationScreen()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const EmailVerificationScreen()));
                         },
                         child: const Icon(Icons.arrow_circle_right_outlined),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 40),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -71,7 +98,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                                 )
                             ),
                             onPressed: (){},
-                            child: const Text("have account?")),
+                            child: const Text("Have account?")),
                         TextButton(
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const SignInScreen()));
@@ -90,6 +117,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   @override
   void dispose() {
     _emailTEController.dispose();
+    _firstNameTEController.dispose();
+    _lastNameTEController.dispose();
+    _mobileNumberTEController.dispose();
+    _passwordTEController.dispose();
     super.dispose();
   }
 }

@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:task_manager/presentation/screens/sign_up_screen.dart';
-import 'package:task_manager/presentation/utility/assets_path.dart';
+import 'package:task_manager/presentation/screens/auth/sign_up_screen.dart';
+import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/presentation/widgets/background_widget.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -55,7 +54,9 @@ class _SignInScreenState extends State<SignInScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const MainBottomNavScreen()), (route) => false);
+                    },
                     child: const Icon(Icons.arrow_circle_right_outlined),
                   ),
                 ),

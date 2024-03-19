@@ -6,9 +6,12 @@ import 'package:task_manager/presentation/utility/app_colors.dart';
 class TaskManager extends StatelessWidget {
   const TaskManager({super.key});
 
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: "Task Manger",
       home: const SplashScreen(),
       theme: ThemeData(
@@ -40,6 +43,10 @@ class TaskManager extends StatelessWidget {
         textTheme: const TextTheme(
           titleLarge: TextStyle(
             fontSize: 32,
+            fontWeight: FontWeight.w600,
+          ),
+          titleMedium: TextStyle(
+            fontSize: 24,
             fontWeight: FontWeight.w600,
           ),
         ),

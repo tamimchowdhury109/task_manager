@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:task_manager/presentation/screens/sign_in_screen.dart';
-import 'package:task_manager/presentation/utility/assets_path.dart';
+import 'package:task_manager/presentation/screens/auth/sign_in_screen.dart';
 import 'package:task_manager/presentation/widgets/background_widget.dart';
 import 'package:task_manager/presentation/widgets/logo_widget.dart';
 
@@ -17,6 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
+    super.initState();
     _moveToSignIn(context);
   }
 
