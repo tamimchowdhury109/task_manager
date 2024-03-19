@@ -9,7 +9,11 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+<<<<<<< HEAD
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+=======
+      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+>>>>>>> origin/master
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
