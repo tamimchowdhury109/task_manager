@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/presentation/screens/sign_in_screen.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:task_manager/presentation/screens/auth/set_password_screen.dart';
+import 'package:task_manager/presentation/screens/auth/sign_in_screen.dart';
+import 'package:task_manager/presentation/utility/app_colors.dart';
 import 'package:task_manager/presentation/widgets/background_widget.dart';
 
 class PinVerificationScreen extends StatefulWidget {
@@ -39,18 +42,39 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                       fontSize: 15,
                     ),),
                     const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _emailTEController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        hintText: 'Email',
+                    PinCodeTextField(
+                      length: 6,
+                      obscureText: false,
+                      animationType: AnimationType.fade,
+                      keyboardType: TextInputType.number,
+                      pinTheme: PinTheme(
+                        shape: PinCodeFieldShape.box,
+                        borderRadius: BorderRadius.circular(5),
+                        fieldHeight: 50,
+                        fieldWidth: 40,
+                        activeFillColor: Colors.white,
+                        inactiveFillColor: Colors.white,
+                        inactiveColor: AppColors.themeColor,
+                        activeColor: AppColors.themeColor,
+                        selectedFillColor: Colors.white
                       ),
+                      animationDuration: const Duration(milliseconds: 300),
+                      backgroundColor: Colors.transparent,
+                      enableActiveFill: true,
+                      onCompleted: (v) {
+                        print("Completed");
+                      },
+                      onChanged: (value) {
+                      },
+                      appContext: context,
                     ),
                     const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SetPasswordScreen()));
+                        },
                         child: const Text('Verify'),
                       ),
                     ),
