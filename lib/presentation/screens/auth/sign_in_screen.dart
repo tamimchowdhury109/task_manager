@@ -125,7 +125,7 @@ class _SignInScreenState extends State<SignInScreen> {
     };
     final ResponseObject response =
     await NetworkCaller.postRequest(
-        Urls.login, inputParams);
+        Urls.login, inputParams, fromSignIn: true);
 
     _isLoginProgress = false;
     setState(() {});

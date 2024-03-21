@@ -33,4 +33,8 @@ class UserData {
     data['photo'] = photo;
     return data;
   }
+
+  String get fullName{
+    return "${firstName ?? ''} ${lastName ?? ''}";
+  }
 }
