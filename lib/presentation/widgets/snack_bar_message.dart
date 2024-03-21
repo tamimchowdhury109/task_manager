@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void showSnackBarMessage(BuildContext context, String message,
     [bool isErrorMessage = false]) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     content: Text(message),
-    backgroundColor: isErrorMessage ? Colors.red : null,
+    backgroundColor: isErrorMessage ? Colors.red : Colors.green,
   ));
 }

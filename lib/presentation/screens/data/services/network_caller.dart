@@ -18,6 +18,13 @@ class NetworkCaller {
         final decodedResponse = jsonDecode(response.body);
         return ResponseObject(
             isSuccess: true, statusCode: 200, responseBody: decodedResponse);
+      } else if(response.statusCode == 401){
+        return ResponseObject(
+            isSuccess: false,
+            statusCode: response.statusCode,
+            responseBody: '',
+            errorMessage: 'Email or Password is incorrect! Please try again'
+        );
       } else {
         return ResponseObject(
             isSuccess: false,
