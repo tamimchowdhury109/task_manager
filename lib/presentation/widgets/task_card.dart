@@ -5,10 +5,12 @@ import 'package:task_manager/presentation/screens/data/models/task_item.dart';
 class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
-    required this.taskItem,
+    required this.taskItem, required this.onDelete, required this.onEdit,
   });
 
   final TaskItem taskItem;
+  final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +34,11 @@ class TaskCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: onEdit,
                   icon: const Icon(Icons.edit),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: onDelete,
                   icon: const Icon(Icons.delete),
                 ),
               ],
