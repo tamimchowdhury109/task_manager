@@ -1,8 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/presentation/controllers/auth_controller.dart';
 import 'package:task_manager/presentation/screens/auth/sign_up_screen.dart';
+import 'package:task_manager/presentation/screens/data/models/login_resoponse.dart';
+import 'package:task_manager/presentation/screens/data/models/response_object.dart';
+import 'package:task_manager/presentation/screens/data/services/network_caller.dart';
+import 'package:task_manager/presentation/screens/data/utils/urls.dart';
 import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/presentation/widgets/background_widget.dart';
+import 'package:task_manager/presentation/widgets/snack_bar_message.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -16,6 +22,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isLoginProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +60,19 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const MainBottomNavScreen()), (route) => false);
-                    },
-                    child: const Icon(Icons.arrow_circle_right_outlined),
+                  child: Visibility(
+                    visible: !_isLoginProgress,
+                    replacement: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if(_formKey.currentState!.validate()){
+                          _signIn();
+                        }
+                      },
+                      child: const Icon(Icons.arrow_circle_right_outlined),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 40),
@@ -97,7 +112,44 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
         ),
       ),
-    ));
+    ),
+    );
+  }
+
+  Future<void> _signIn() async {
+    _isLoginProgress = true;
+    setState(() {});
+    Map<String, dynamic> inputParams = {
+      "email": _emailTEController.text.trim(),
+      "password": _passwordTEController.text,
+    };
+    final ResponseObject response =
+    await NetworkCaller.postRequest(
+        Urls.login, inputParams, fromSignIn: true);
+
+    _isLoginProgress = false;
+    setState(() {});
+    if (response.isSuccess) {
+      if (!mounted) {
+        return;
+      }
+
+      LoginResponse loginResponse = LoginResponse.fromJson(response.responseBody);
+      print(loginResponse.userData?.firstName);
+
+      await AuthController.saveUserData(loginResponse.userData!);
+      await AuthController.saveUserToken(loginResponse.token!);
+
+      if (mounted){
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const MainBottomNavScreen()), (route) => false);
+        showSnackBarMessage(context,
+            'Login Success!', false);
+      }
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage ?? 'Login Failed! Try again', true);
+      }
+    }
   }
 
   @override

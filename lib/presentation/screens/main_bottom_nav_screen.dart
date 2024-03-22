@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/presentation/screens/cancelled_task_screen.dart';
 import 'package:task_manager/presentation/screens/complete_task_screen.dart';
 import 'package:task_manager/presentation/screens/new_task_screen.dart';
+import 'package:task_manager/presentation/screens/progress_task_screen.dart';
 import 'package:task_manager/presentation/utility/app_colors.dart';
-
 class MainBottomNavScreen extends StatefulWidget {
   const MainBottomNavScreen({super.key});
 
@@ -18,8 +19,8 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
   final List<Widget> _screen = [
     const NewTaskScreen(),
     const CompleteTaskScreen(),
-    const NewTaskScreen(),
-    const NewTaskScreen(),
+    const CancelledTaskScreen(),
+    const ProgressTaskScreen(),
   ];
 
   @override

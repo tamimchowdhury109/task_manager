@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/presentation/utility/app_colors.dart';
+import 'package:task_manager/presentation/screens/data/models/task_list_wrapper.dart';
+import 'package:task_manager/presentation/screens/data/services/network_caller.dart';
+import 'package:task_manager/presentation/screens/data/utils/urls.dart';
 import 'package:task_manager/presentation/widgets/background_widget.dart';
-import 'package:task_manager/presentation/widgets/profile_bar.dart';
+import 'package:task_manager/presentation/widgets/profile_app_bar.dart';
+import 'package:task_manager/presentation/widgets/snack_bar_message.dart';
 import 'package:task_manager/presentation/widgets/task_card.dart';
-import 'package:task_manager/presentation/widgets/task_counter_card.dart';
 
 class CompleteTaskScreen extends StatefulWidget {
   const CompleteTaskScreen({super.key});
@@ -14,19 +16,59 @@ class CompleteTaskScreen extends StatefulWidget {
 }
 
 class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
+  bool _getAllCompletedTaskCountByStatusInProgress = false;
+  TaskListWrapper _completedTaskListWrapper = TaskListWrapper();
+
+  @override
+  void initState() {
+    super.initState();
+    _getAllCompletedTaskList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: profileAppBar,
       body: BackgroundWidget(
-          child: Expanded(
+          child: Visibility(
+            visible: !_getAllCompletedTaskCountByStatusInProgress,
+            replacement: const Center(
+              child: CircularProgressIndicator(),
+            ),
             child: ListView.builder(
-                itemCount: 5,
+                itemCount: _completedTaskListWrapper.taskList?.length ?? 0,
                 itemBuilder: (context, index) {
-                  return const TaskCard();
+                  return TaskCard(
+                      taskItem: _completedTaskListWrapper.taskList![index],
+                      onDelete: (){},
+                      onEdit: (){});
+                  // return const TaskCard();
                 }),
           ),),
     );
+  }
+
+  Future<void> _getAllCompletedTaskList() async {
+    _getAllCompletedTaskCountByStatusInProgress = true;
+    setState(() {});
+
+    final response = await NetworkCaller.getRequest(Urls.completedTaskList);
+
+    if (response.isSuccess) {
+      _completedTaskListWrapper =
+          TaskListWrapper.fromJson(response.responseBody);
+      _getAllCompletedTaskCountByStatusInProgress = false;
+      setState(() {});
+    } else {
+      _getAllCompletedTaskCountByStatusInProgress = false;
+      setState(() {});
+      if (mounted) {
+        showSnackBarMessage(
+            context,
+            response.errorMessage ??
+                'Get task count by status has been failed');
+      }
+    }
   }
 }
 
