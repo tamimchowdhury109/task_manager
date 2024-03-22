@@ -25,7 +25,7 @@ class TaskCard extends StatelessWidget {
               taskItem.title ?? '',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            Text(taskItem.description ?? ''),
+            Text(taskItem.description ?? ' '),
             Text('Date: ${taskItem.createdDate}'),
             Row(
               children: [
