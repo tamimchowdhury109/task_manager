@@ -23,6 +23,10 @@ class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
   @override
   void initState() {
     super.initState();
+    _getDataFromApis();
+  }
+
+  void _getDataFromApis(){
     _getAllCompletedTaskList();
   }
 
@@ -31,25 +35,30 @@ class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
     return Scaffold(
       appBar: profileAppBar,
       body: BackgroundWidget(
-        child: Visibility(
-          visible: !_getAllProgressTaskCountByStatusInProgress,
-          replacement: const Center(
-            child: CircularProgressIndicator(),
-          ),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _getDataFromApis();
+          },
           child: Visibility(
-            visible: _progressTaskListWrapper.taskList?.isNotEmpty ?? false,
-            replacement: const EmptyListWidget(),
-            child: ListView.builder(
-              itemCount: _progressTaskListWrapper.taskList?.length ?? 0,
-              itemBuilder: (context, index) {
-                return TaskCard(
-                  taskItem: _progressTaskListWrapper.taskList![index],
-                  deleteTask: (){},
-                  refreshList: (){
-                    _getAllCompletedTaskList();
-                  },
-                );
-              },
+            visible: !_getAllProgressTaskCountByStatusInProgress,
+            replacement: const Center(
+              child: CircularProgressIndicator(),
+            ),
+            child: Visibility(
+              visible: _progressTaskListWrapper.taskList?.isNotEmpty ?? false,
+              replacement: const EmptyListWidget(),
+              child: ListView.builder(
+                itemCount: _progressTaskListWrapper.taskList?.length ?? 0,
+                itemBuilder: (context, index) {
+                  return TaskCard(
+                    taskItem: _progressTaskListWrapper.taskList![index],
+                    deleteTask: (){},
+                    refreshList: (){
+                      _getAllCompletedTaskList();
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ),

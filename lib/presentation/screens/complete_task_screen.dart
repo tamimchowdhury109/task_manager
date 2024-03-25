@@ -23,6 +23,10 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
   @override
   void initState() {
     super.initState();
+    _getDataFromApis();
+  }
+
+  void _getDataFromApis() {
     _getAllCompletedTaskList();
   }
 
@@ -31,25 +35,30 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
     return Scaffold(
       appBar: profileAppBar,
       body: BackgroundWidget(
-        child: Visibility(
-          visible: !_getAllCompletedTaskCountByStatusInProgress,
-          replacement: const Center(
-            child: CircularProgressIndicator(),
-          ),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _getDataFromApis();
+          },
           child: Visibility(
-            visible: _completedTaskListWrapper.taskList?.isNotEmpty ?? false,
-            replacement: const EmptyListWidget(),
-            child: ListView.builder(
-              itemCount: _completedTaskListWrapper.taskList?.length ?? 0,
-              itemBuilder: (context, index) {
-                return TaskCard(
-                  taskItem: _completedTaskListWrapper.taskList![index],
-                  deleteTask: (){},
-                  refreshList: (){
-                    _getAllCompletedTaskList();
-                  },
-                );
-              },
+            visible: !_getAllCompletedTaskCountByStatusInProgress,
+            replacement: const Center(
+              child: CircularProgressIndicator(),
+            ),
+            child: Visibility(
+              visible: _completedTaskListWrapper.taskList?.isNotEmpty ?? false,
+              replacement: const EmptyListWidget(),
+              child: ListView.builder(
+                itemCount: _completedTaskListWrapper.taskList?.length ?? 0,
+                itemBuilder: (context, index) {
+                  return TaskCard(
+                    taskItem: _completedTaskListWrapper.taskList![index],
+                    deleteTask: (){},
+                    refreshList: (){
+                      _getAllCompletedTaskList();
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ),

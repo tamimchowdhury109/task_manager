@@ -83,13 +83,16 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.themeColor,
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const AddNewTaskScreen(),
             ),
           );
+          if (result != null && result == true){
+            _getDataFromApis();
+          }
         },
         child: const Icon(
           Icons.add,

@@ -23,6 +23,10 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
   @override
   void initState() {
     super.initState();
+    _getDataFromApis();
+  }
+
+  void _getDataFromApis(){
     _getAllCancelledTaskList();
   }
 
@@ -31,25 +35,30 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
     return Scaffold(
       appBar: profileAppBar,
       body: BackgroundWidget(
-        child: Visibility(
-          visible: !_getAllCancelledTaskCountByStatusInProgress,
-          replacement: const Center(
-            child: CircularProgressIndicator(),
-          ),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _getDataFromApis();
+          },
           child: Visibility(
-            visible: _cancelledTaskListWrapper.taskList?.isNotEmpty ?? false,
-            replacement: const EmptyListWidget(),
-            child: ListView.builder(
-              itemCount: _cancelledTaskListWrapper.taskList?.length ?? 0,
-              itemBuilder: (context, index) {
-                return TaskCard(
-                  taskItem: _cancelledTaskListWrapper.taskList![index],
-                  deleteTask: (){},
-                  refreshList: (){
-                    _getAllCancelledTaskList();
-                  },
-                );
-              },
+            visible: !_getAllCancelledTaskCountByStatusInProgress,
+            replacement: const Center(
+              child: CircularProgressIndicator(),
+            ),
+            child: Visibility(
+              visible: _cancelledTaskListWrapper.taskList?.isNotEmpty ?? false,
+              replacement: const EmptyListWidget(),
+              child: ListView.builder(
+                itemCount: _cancelledTaskListWrapper.taskList?.length ?? 0,
+                itemBuilder: (context, index) {
+                  return TaskCard(
+                    taskItem: _cancelledTaskListWrapper.taskList![index],
+                    deleteTask: (){},
+                    refreshList: (){
+                      _getAllCancelledTaskList();
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ),
