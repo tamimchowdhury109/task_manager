@@ -40,7 +40,7 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
             itemBuilder: (context, index) {
               return TaskCard(
                 taskItem: _completedTaskListWrapper.taskList![index],
-                onDelete: () {},
+                deleteTask: (){},
                 refreshList: (){},
               );
             },

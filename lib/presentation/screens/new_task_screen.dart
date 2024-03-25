@@ -22,7 +22,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   bool _getAllTaskCountByStatusInProgress = false;
   bool _getNewTaskListInProgress = false;
   bool _updateTaskStatusInProgress = false;
-  bool _deleteTaskInProgress = false;
   CountByStatusWrapper _countByStatusWrapper = CountByStatusWrapper();
   TaskListWrapper _newTaskListWrapper = TaskListWrapper();
 
@@ -55,7 +54,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               ),
               Expanded(
                 child: Visibility(
-                  visible: !_getNewTaskListInProgress,
+                  visible: !_getNewTaskListInProgress && !_updateTaskStatusInProgress,
                   replacement: const Center(
                     child: CircularProgressIndicator(),
                   ),
@@ -64,12 +63,11 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                     itemBuilder: (context, index) {
                       return TaskCard(
                         taskItem: _newTaskListWrapper.taskList![index],
-                        onDelete: () {
-                          _deleteTaskById(_newTaskListWrapper.taskList![index].sId!);
-                        },
                         refreshList: () {
                           _getDataFromApis();
-                        },
+                        }, deleteTask: () {
+                          _getDataFromApis();
+                      },
                       );
                     },
                   ),
@@ -161,22 +159,4 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       }
     }
   }
-
-  Future<void> _deleteTaskById(String id) async {
-    _deleteTaskInProgress = true;
-    setState(() {});
-    final response = await NetworkCaller.getRequest(Urls.deleteTask(id));
-    if (response.isSuccess) {
-      _deleteTaskInProgress = false;
-      _getDataFromApis();
-    } else {
-      _deleteTaskInProgress = false;
-      setState(() {});
-      if (mounted) {
-        showSnackBarMessage(
-            context, response.errorMessage ?? 'Delete task has been failed');
-      }
-    }
-  }
-
 }

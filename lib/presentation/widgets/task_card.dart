@@ -8,12 +8,12 @@ import 'package:task_manager/presentation/widgets/snack_bar_message.dart';
 class TaskCard extends StatefulWidget {
   const TaskCard({
     super.key,
-    required this.taskItem, required this.onDelete,required this.refreshList,
+    required this.taskItem,required this.refreshList,required this.deleteTask,
   });
 
   final TaskItem taskItem;
-  final VoidCallback onDelete;
   final VoidCallback refreshList;
+  final VoidCallback deleteTask;
 
   @override
   State<TaskCard> createState() => _TaskCardState();
@@ -22,6 +22,7 @@ class TaskCard extends StatefulWidget {
 class _TaskCardState extends State<TaskCard> {
 
   bool _updateTaskStatusInProgress = false;
+  bool _deleteTaskInProgress = false;
 
   @override
   void initState() {
@@ -56,7 +57,9 @@ class _TaskCardState extends State<TaskCard> {
                   icon: const Icon(Icons.edit),
                 ),
                 IconButton(
-                  onPressed: widget.onDelete,
+                  onPressed: (){
+                    _deleteTaskById(widget.taskItem.sId!);
+                  },
                   icon: const Icon(Icons.delete),
                 ),
               ],
@@ -125,4 +128,22 @@ class _TaskCardState extends State<TaskCard> {
       }
     }
   }
+
+  Future<void> _deleteTaskById(String id) async {
+    _deleteTaskInProgress = true;
+    setState(() {});
+    final response = await NetworkCaller.getRequest(Urls.deleteTask(id));
+    if (response.isSuccess) {
+      _deleteTaskInProgress = false;
+      widget.refreshList();
+    } else {
+      _deleteTaskInProgress = false;
+      setState(() {});
+      if (mounted) {
+        showSnackBarMessage(
+            context, response.errorMessage ?? 'Delete task has been failed');
+      }
+    }
+  }
+
 }
