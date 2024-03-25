@@ -6,6 +6,7 @@ import 'package:task_manager/presentation/screens/data/services/network_caller.d
 import 'package:task_manager/presentation/screens/data/utils/urls.dart';
 import 'package:task_manager/presentation/utility/app_colors.dart';
 import 'package:task_manager/presentation/widgets/background_widget.dart';
+import 'package:task_manager/presentation/widgets/empty_list_widget.dart';
 import 'package:task_manager/presentation/widgets/profile_app_bar.dart';
 import 'package:task_manager/presentation/widgets/snack_bar_message.dart';
 import 'package:task_manager/presentation/widgets/task_card.dart';
@@ -21,7 +22,6 @@ class NewTaskScreen extends StatefulWidget {
 class _NewTaskScreenState extends State<NewTaskScreen> {
   bool _getAllTaskCountByStatusInProgress = false;
   bool _getNewTaskListInProgress = false;
-  bool _updateTaskStatusInProgress = false;
   CountByStatusWrapper _countByStatusWrapper = CountByStatusWrapper();
   TaskListWrapper _newTaskListWrapper = TaskListWrapper();
 
@@ -54,22 +54,26 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               ),
               Expanded(
                 child: Visibility(
-                  visible: !_getNewTaskListInProgress && !_updateTaskStatusInProgress,
+                  visible: !_getNewTaskListInProgress,
                   replacement: const Center(
                     child: CircularProgressIndicator(),
                   ),
-                  child: ListView.builder(
-                    itemCount: _newTaskListWrapper.taskList?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      return TaskCard(
-                        taskItem: _newTaskListWrapper.taskList![index],
-                        refreshList: () {
-                          _getDataFromApis();
-                        }, deleteTask: () {
-                          _getDataFromApis();
+                  child: Visibility(
+                    visible: _newTaskListWrapper.taskList?.isNotEmpty ?? false,
+                    replacement: const EmptyListWidget(),
+                    child: ListView.builder(
+                      itemCount: _newTaskListWrapper.taskList?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        return TaskCard(
+                          taskItem: _newTaskListWrapper.taskList![index],
+                          refreshList: () {
+                            _getDataFromApis();
+                          }, deleteTask: () {
+                            _getDataFromApis();
+                        },
+                        );
                       },
-                      );
-                    },
+                    ),
                   ),
                 ),
               ),
@@ -94,7 +98,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     );
   }
 
-
   Widget get taskCounterSection {
     return SizedBox(
       height: 90,
@@ -117,7 +120,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       ),
     );
   }
-
 
   Future<void> _getAllTaskCountByStatus() async {
     _getAllTaskCountByStatusInProgress = true;

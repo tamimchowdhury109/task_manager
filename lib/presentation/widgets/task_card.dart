@@ -79,29 +79,48 @@ class _TaskCardState extends State<TaskCard> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const ListTile(
-                title: Text("New"),
-                trailing: Icon(Icons.check),
+              ListTile(
+                title: const Text("New"),
+                trailing: _isCurrentStatus('New') ? const Icon(Icons.check) : null ,
+                onTap: (){
+                  if(_isCurrentStatus('New')){
+                    return;
+                  }
+                  _updateTaskById(id, 'New');
+                  Navigator.pop(context);
+                },
               ),
               ListTile(
                 title: const Text("Complete"),
-                onTap: () {
-                  Navigator.pop(context);
+                trailing: _isCurrentStatus('Complete') ? const Icon(Icons.check) : null ,
+                onTap: (){
+                  if(_isCurrentStatus('Complete')){
+                    return;
+                  }
                   _updateTaskById(id, 'Complete');
+                  Navigator.pop(context);
                 },
               ),
               ListTile(
                 title: const Text("Progress"),
-                onTap: () {
-                  Navigator.pop(context);
+                trailing: _isCurrentStatus('Progress') ? const Icon(Icons.check) : null ,
+                onTap: (){
+                  if(_isCurrentStatus('Progress')){
+                    return;
+                  }
                   _updateTaskById(id, 'Progress');
+                  Navigator.pop(context);
                 },
               ),
               ListTile(
                 title: const Text("Cancelled"),
-                onTap: () {
-                  Navigator.pop(context);
+                trailing: _isCurrentStatus('Cancelled') ? const Icon(Icons.check) : null ,
+                onTap: (){
+                  if(_isCurrentStatus('Cancelled')){
+                    return;
+                  }
                   _updateTaskById(id, 'Cancelled');
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -109,6 +128,10 @@ class _TaskCardState extends State<TaskCard> {
         );
       },
     );
+  }
+
+  bool _isCurrentStatus(String status){
+    return widget.taskItem.status! == status;
   }
 
   Future<void> _updateTaskById(String id, String status) async {
