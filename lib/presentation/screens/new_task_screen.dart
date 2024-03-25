@@ -49,29 +49,30 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
           child: Column(
             children: [
               Visibility(
-                  visible: !_getAllTaskCountByStatusInProgress,
-                  replacement: const LinearProgressIndicator(),
-                  child: taskCounterSection),
+                visible: !_getAllTaskCountByStatusInProgress,
+                replacement: const LinearProgressIndicator(),
+                child: taskCounterSection,
+              ),
               Expanded(
                 child: Visibility(
-                  visible: !_getNewTaskListInProgress && !_deleteTaskInProgress && !_updateTaskStatusInProgress,
+                  visible: !_getNewTaskListInProgress,
                   replacement: const Center(
                     child: CircularProgressIndicator(),
                   ),
                   child: ListView.builder(
-                      itemCount: _newTaskListWrapper.taskList?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return TaskCard(
-                          taskItem: _newTaskListWrapper.taskList![index],
-                          onDelete: () {
-                            _deleteTaskById(
-                                _newTaskListWrapper.taskList![index].sId!);
-                          },
-                          onEdit: () {
-                            _showUpdateStatusDialog(_newTaskListWrapper.taskList![index].sId!);
-                          },
-                        );
-                      }),
+                    itemCount: _newTaskListWrapper.taskList?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      return TaskCard(
+                        taskItem: _newTaskListWrapper.taskList![index],
+                        onDelete: () {
+                          _deleteTaskById(_newTaskListWrapper.taskList![index].sId!);
+                        },
+                        refreshList: () {
+                          _getDataFromApis();
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -82,9 +83,11 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         backgroundColor: AppColors.themeColor,
         onPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const AddNewTaskScreen()));
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddNewTaskScreen(),
+            ),
+          );
         },
         child: const Icon(
           Icons.add,
@@ -92,6 +95,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       ),
     );
   }
+
 
   Widget get taskCounterSection {
     return SizedBox(
@@ -116,46 +120,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     );
   }
 
-  void _showUpdateStatusDialog(String id) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Select status"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const ListTile(
-                title: Text("New"),
-                trailing: Icon(Icons.check),
-              ),
-              ListTile(
-                title: const Text("Complete"),
-                onTap: () {
-                  Navigator.pop(context);
-                  _updateTaskById(id, 'Complete');
-                },
-              ),
-              ListTile(
-                title: const Text("Progress"),
-                onTap: () {
-                  Navigator.pop(context);
-                  _updateTaskById(id, 'Progress');
-                },
-              ),
-              ListTile(
-                title: const Text("Cancelled"),
-                onTap: () {
-                  Navigator.pop(context);
-                  _updateTaskById(id, 'Cancelled');
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
   Future<void> _getAllTaskCountByStatus() async {
     _getAllTaskCountByStatusInProgress = true;
@@ -181,16 +145,15 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   }
 
   Future<void> _getAllNewTaskList() async {
-    _getAllTaskCountByStatusInProgress = true;
+    _getNewTaskListInProgress = true;
     setState(() {});
-
     final response = await NetworkCaller.getRequest(Urls.newTaskList);
     if (response.isSuccess) {
-      _newTaskListWrapper = TaskListWrapper.fromJson(response.responseBody);
-      _getAllTaskCountByStatusInProgress = false;
+      _getNewTaskListInProgress = false;
       setState(() {});
+      _newTaskListWrapper = TaskListWrapper.fromJson(response.responseBody);
     } else {
-      _getAllTaskCountByStatusInProgress = false;
+      _getNewTaskListInProgress = false;
       setState(() {});
       if (mounted) {
         showSnackBarMessage(
@@ -216,21 +179,4 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     }
   }
 
-  Future<void> _updateTaskById(String id, String status) async {
-    _updateTaskStatusInProgress = false;
-    setState(() {});
-    final response =
-        await NetworkCaller.getRequest(Urls.updateTaskStatus(id, status));
-    _updateTaskStatusInProgress = false;
-
-    if (response.isSuccess) {
-      _getDataFromApis();
-    } else {
-      setState(() {});
-      if (mounted) {
-        showSnackBarMessage(context,
-            response.errorMessage ?? 'Update task status has been failed');
-      }
-    }
-  }
 }

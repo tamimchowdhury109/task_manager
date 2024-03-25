@@ -30,21 +30,23 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
     return Scaffold(
       appBar: profileAppBar,
       body: BackgroundWidget(
-          child: Visibility(
-            visible: !_getAllCompletedTaskCountByStatusInProgress,
-            replacement: const Center(
-              child: CircularProgressIndicator(),
-            ),
-            child: ListView.builder(
-                itemCount: _completedTaskListWrapper.taskList?.length ?? 0,
-                itemBuilder: (context, index) {
-                  return TaskCard(
-                      taskItem: _completedTaskListWrapper.taskList![index],
-                      onDelete: (){},
-                      onEdit: (){});
-                  // return const TaskCard();
-                }),
-          ),),
+        child: Visibility(
+          visible: !_getAllCompletedTaskCountByStatusInProgress,
+          replacement: const Center(
+            child: CircularProgressIndicator(),
+          ),
+          child: ListView.builder(
+            itemCount: _completedTaskListWrapper.taskList?.length ?? 0,
+            itemBuilder: (context, index) {
+              return TaskCard(
+                taskItem: _completedTaskListWrapper.taskList![index],
+                onDelete: () {},
+                refreshList: (){},
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 
@@ -71,5 +73,3 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
     }
   }
 }
-
-
