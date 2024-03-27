@@ -14,6 +14,11 @@ class MainBottomNavScreen extends StatefulWidget {
 
 class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
 
+  @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+  }
+
   int _currentSelectedIndex = 0;
 
   final List<Widget> _screen = [

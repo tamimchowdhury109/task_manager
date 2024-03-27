@@ -23,10 +23,13 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop){
+        if(didPop){
+          return;
+        }
         Navigator.pop(context, _shouldRefreshNewTaskList);
-        return false;
       },
       child: Scaffold(
         appBar: profileAppBar,

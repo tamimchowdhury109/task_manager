@@ -1,12 +1,16 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/presentation/controllers/auth_controller.dart';
-import 'package:task_manager/presentation/screens/auth/email_verification_screen.dart';
+import 'package:task_manager/presentation/screens/data/models/user_data.dart';
+import 'package:task_manager/presentation/screens/data/services/network_caller.dart';
+import 'package:task_manager/presentation/screens/data/utils/urls.dart';
 import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/presentation/widgets/background_widget.dart';
 import 'package:task_manager/presentation/widgets/profile_app_bar.dart';
+import 'package:task_manager/presentation/widgets/snack_bar_message.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -68,6 +72,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     decoration: const InputDecoration(
                       hintText: 'First Name',
                     ),
+                    validator: (String? value){
+                      if(value?.trim().isEmpty?? true){
+                        return 'Enter your first name';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
@@ -75,6 +85,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     decoration: const InputDecoration(
                       hintText: 'Last Name',
                     ),
+                    validator: (String? value){
+                      if(value?.trim().isEmpty?? true){
+                        return 'Enter your last name';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
@@ -83,6 +99,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     decoration: const InputDecoration(
                       hintText: 'Mobile',
                     ),
+                    validator: (String? value){
+                      if(value?.trim().isEmpty?? true){
+                        return 'Enter your mobile number';
+                      }
+                      return null;
+                    },
+                    maxLength: 11,
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
@@ -90,19 +113,21 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     decoration: const InputDecoration(
                       hintText: 'Password (optional)',
                     ),
+                    maxLength: 8,
                   ),
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const MainBottomNavScreen()));
-                      },
-                      child: const Icon(Icons.arrow_circle_right_outlined),
+                    child: Visibility(
+                      visible: !_updateProfileInProgress,
+                      replacement: const Center(child: CircularProgressIndicator()),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _updateProfile();
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const MainBottomNavScreen()), (route) => false);
+                        },
+                        child: const Icon(Icons.arrow_circle_right_outlined),
+                      ),
                     ),
                   ),
                 ],
@@ -161,7 +186,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     setState(() {});
   }
 
-  Future <void> _updateProfile() async {
+  Future<void> _updateProfile() async {
+    String? photo;
+
     _updateProfileInProgress = true;
     setState(() {});
 
@@ -176,10 +203,37 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       inputParams['password'] = _passwordTEController.text;
     }
 
-    if(_pickedImage != null){
+    if (_pickedImage != null) {
+      try {
+        List<int> bytes = await _pickedImage!.readAsBytes();
+        photo = base64Encode(bytes);
+        inputParams['photo'] = photo;
+      } catch (e) {
+        print("Error encoding image: $e");
+      }
+    }
 
+    final response = await NetworkCaller.postRequest(Urls.updateProfile, inputParams);
+    _updateProfileInProgress = false;
+
+    if(response.isSuccess){
+      if(response.responseBody['status'] == 'success'){
+        UserData userData = UserData(
+          email: _emailTEController.text,
+          firstName: _firstNameTEController.text.trim(),
+          lastName: _lastNameTEController.text.trim(),
+          mobile: _mobileNumberTEController.text.trim(),
+          photo: photo,
+        );
+        await AuthController.saveUserData(userData);
+      }
+    } else {
+      if(mounted){
+        showSnackBarMessage(context, response.errorMessage ?? 'Profile update failed');
+      }
     }
   }
+
 
   @override
   void dispose() {
