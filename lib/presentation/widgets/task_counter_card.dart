@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/presentation/widgets/status_color_widget.dart';
 
 class TaskCounterCard extends StatelessWidget {
   const TaskCounterCard({
@@ -12,26 +13,33 @@ class TaskCounterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: Column(
-          children: [
-            Text(
-              '$amount',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+    return SizedBox(
+      height: 200,
+      width: 100,
+      child: Card(
+        color: StatusBackgroundColors.getColor(title).withOpacity(0.8),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+          child: Column(
+            children: [
+              Text(
+                '$amount',
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-            ),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.grey,
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

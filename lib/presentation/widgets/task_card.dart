@@ -1,14 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:task_manager/presentation/screens/data/models/task_item.dart';
 import 'package:task_manager/presentation/screens/data/services/network_caller.dart';
 import 'package:task_manager/presentation/screens/data/utils/urls.dart';
 import 'package:task_manager/presentation/widgets/snack_bar_message.dart';
+import 'package:task_manager/presentation/widgets/status_color_widget.dart';
 
 class TaskCard extends StatefulWidget {
   const TaskCard({
     super.key,
-    required this.taskItem,required this.refreshList,required this.deleteTask,
+    required this.taskItem,
+    required this.refreshList,
+    required this.deleteTask,
   });
 
   final TaskItem taskItem;
@@ -20,7 +24,6 @@ class TaskCard extends StatefulWidget {
 }
 
 class _TaskCardState extends State<TaskCard> {
-
   bool _updateTaskStatusInProgress = false;
   bool _deleteTaskInProgress = false;
 
@@ -38,29 +41,76 @@ class _TaskCardState extends State<TaskCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.taskItem.title ?? '',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            Text(widget.taskItem.description ?? ' '),
-            Text('Date: ${widget.taskItem.createdDate}'),
             Row(
               children: [
-                Chip(
-                  label: Text(widget.taskItem.status ?? ''),
+                Expanded(
+                  child: Text(
+                    widget.taskItem.title ?? '',
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.ellipsis),
+                    maxLines: 1,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Row(
+                  children: [
+                    const ImageIcon(
+                      size: 18,
+                        AssetImage('assets/images/icon/ic_date.png'),color: Colors.black54,),
+                    const SizedBox(width: 2),
+                    Text(
+                      '${widget.taskItem.createdDate}',
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 5),
+              ],
+            ),
+            Text(widget.taskItem.description ?? ' '),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(right: 5),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color:
+                        StatusBackgroundColors.getColor(widget.taskItem.status),
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 2,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    widget.taskItem.status ?? '',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14),
+                  ),
                 ),
                 const Spacer(),
                 IconButton(
-                  onPressed: (){
+                  onPressed: () {
                     _showUpdateStatusDialog(widget.taskItem.sId!);
                   },
-                  icon: const Icon(Icons.edit),
+                  // icon: const Icon(Icons.edit),
+                  icon: const ImageIcon(
+                      AssetImage('assets/images/icon/ic_edit.png')),
                 ),
                 IconButton(
-                  onPressed: (){
+                  onPressed: () {
                     _deleteTaskById(widget.taskItem.sId!);
                   },
-                  icon: const Icon(Icons.delete),
+                  icon: const ImageIcon(
+                      size: 22, AssetImage('assets/images/icon/ic_delete.png')),
                 ),
               ],
             )
@@ -81,9 +131,10 @@ class _TaskCardState extends State<TaskCard> {
             children: [
               ListTile(
                 title: const Text("New"),
-                trailing: _isCurrentStatus('New') ? const Icon(Icons.check) : null ,
-                onTap: (){
-                  if(_isCurrentStatus('New')){
+                trailing:
+                    _isCurrentStatus('New') ? const Icon(Icons.check) : null,
+                onTap: () {
+                  if (_isCurrentStatus('New')) {
                     return;
                   }
                   _updateTaskById(id, 'New');
@@ -92,9 +143,11 @@ class _TaskCardState extends State<TaskCard> {
               ),
               ListTile(
                 title: const Text("Complete"),
-                trailing: _isCurrentStatus('Complete') ? const Icon(Icons.check) : null ,
-                onTap: (){
-                  if(_isCurrentStatus('Complete')){
+                trailing: _isCurrentStatus('Complete')
+                    ? const Icon(Icons.check)
+                    : null,
+                onTap: () {
+                  if (_isCurrentStatus('Complete')) {
                     return;
                   }
                   _updateTaskById(id, 'Complete');
@@ -103,9 +156,11 @@ class _TaskCardState extends State<TaskCard> {
               ),
               ListTile(
                 title: const Text("Progress"),
-                trailing: _isCurrentStatus('Progress') ? const Icon(Icons.check) : null ,
-                onTap: (){
-                  if(_isCurrentStatus('Progress')){
+                trailing: _isCurrentStatus('Progress')
+                    ? const Icon(Icons.check)
+                    : null,
+                onTap: () {
+                  if (_isCurrentStatus('Progress')) {
                     return;
                   }
                   _updateTaskById(id, 'Progress');
@@ -114,9 +169,11 @@ class _TaskCardState extends State<TaskCard> {
               ),
               ListTile(
                 title: const Text("Cancelled"),
-                trailing: _isCurrentStatus('Cancelled') ? const Icon(Icons.check) : null ,
-                onTap: (){
-                  if(_isCurrentStatus('Cancelled')){
+                trailing: _isCurrentStatus('Cancelled')
+                    ? const Icon(Icons.check)
+                    : null,
+                onTap: () {
+                  if (_isCurrentStatus('Cancelled')) {
                     return;
                   }
                   _updateTaskById(id, 'Cancelled');
@@ -130,14 +187,15 @@ class _TaskCardState extends State<TaskCard> {
     );
   }
 
-  bool _isCurrentStatus(String status){
+  bool _isCurrentStatus(String status) {
     return widget.taskItem.status! == status;
   }
 
   Future<void> _updateTaskById(String id, String status) async {
     _updateTaskStatusInProgress = true;
     setState(() {});
-    final response = await NetworkCaller.getRequest(Urls.updateTaskStatus(id, status));
+    final response =
+        await NetworkCaller.getRequest(Urls.updateTaskStatus(id, status));
     if (response.isSuccess) {
       _updateTaskStatusInProgress = false;
       setState(() {});
@@ -168,5 +226,4 @@ class _TaskCardState extends State<TaskCard> {
       }
     }
   }
-
 }
