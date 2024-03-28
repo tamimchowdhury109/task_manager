@@ -48,6 +48,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   decoration: const InputDecoration(
                     hintText: 'Email',
                   ),
+                  validator: (String? value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return 'Enter your Email';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -56,6 +62,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   decoration: const InputDecoration(
                     hintText: 'Password',
                   ),
+                  validator: (String? value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return 'Enter your password';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 SizedBox(

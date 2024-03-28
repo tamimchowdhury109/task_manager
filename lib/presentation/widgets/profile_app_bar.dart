@@ -1,10 +1,13 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:task_manager/app.dart';
 import 'package:task_manager/presentation/controllers/auth_controller.dart';
 import 'package:task_manager/presentation/screens/auth/sign_in_screen.dart';
 import 'package:task_manager/presentation/screens/update_profile_screen.dart';
 import 'package:task_manager/presentation/utility/app_colors.dart';
+import 'package:task_manager/presentation/widgets/profile_picture_widget.dart';
 
 PreferredSizeWidget get profileAppBar {
   return AppBar(
@@ -12,14 +15,15 @@ PreferredSizeWidget get profileAppBar {
     backgroundColor: AppColors.themeColor,
     title: GestureDetector(
       onTap: () {
-        Navigator.push(
+        Navigator.pushReplacement(
             TaskManager.navigatorKey.currentState!.context,
             MaterialPageRoute(
                 builder: (context) => const UpdateProfileScreen()));
+
       },
       child: Row(
         children: [
-          const CircleAvatar(),
+          const UserProfileAvatar(),
           const SizedBox(
             width: 12,
           ),
@@ -58,3 +62,5 @@ PreferredSizeWidget get profileAppBar {
     ),
   );
 }
+
+

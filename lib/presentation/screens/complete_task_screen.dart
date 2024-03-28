@@ -4,6 +4,7 @@ import 'package:task_manager/presentation/screens/data/models/task_list_wrapper.
 import 'package:task_manager/presentation/screens/data/services/network_caller.dart';
 import 'package:task_manager/presentation/screens/data/utils/urls.dart';
 import 'package:task_manager/presentation/widgets/background_widget.dart';
+import 'package:task_manager/presentation/widgets/empty_list_widget.dart';
 import 'package:task_manager/presentation/widgets/profile_app_bar.dart';
 import 'package:task_manager/presentation/widgets/snack_bar_message.dart';
 import 'package:task_manager/presentation/widgets/task_card.dart';
@@ -22,6 +23,10 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
   @override
   void initState() {
     super.initState();
+    _getDataFromApis();
+  }
+
+  void _getDataFromApis() {
     _getAllCompletedTaskList();
   }
 
@@ -30,30 +35,40 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
     return Scaffold(
       appBar: profileAppBar,
       body: BackgroundWidget(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _getDataFromApis();
+          },
           child: Visibility(
             visible: !_getAllCompletedTaskCountByStatusInProgress,
             replacement: const Center(
               child: CircularProgressIndicator(),
             ),
-            child: ListView.builder(
+            child: Visibility(
+              visible: _completedTaskListWrapper.taskList?.isNotEmpty ?? false,
+              replacement: const EmptyListWidget(),
+              child: ListView.builder(
                 itemCount: _completedTaskListWrapper.taskList?.length ?? 0,
                 itemBuilder: (context, index) {
                   return TaskCard(
-                      taskItem: _completedTaskListWrapper.taskList![index],
-                      onDelete: (){},
-                      onEdit: (){});
-                  // return const TaskCard();
-                }),
-          ),),
+                    taskItem: _completedTaskListWrapper.taskList![index],
+                    deleteTask: (){},
+                    refreshList: (){
+                      _getAllCompletedTaskList();
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
-
   Future<void> _getAllCompletedTaskList() async {
     _getAllCompletedTaskCountByStatusInProgress = true;
     setState(() {});
-
     final response = await NetworkCaller.getRequest(Urls.completedTaskList);
-
     if (response.isSuccess) {
       _completedTaskListWrapper =
           TaskListWrapper.fromJson(response.responseBody);
@@ -71,5 +86,3 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
     }
   }
 }
-
-
