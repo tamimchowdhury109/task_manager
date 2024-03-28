@@ -34,87 +34,93 @@ class _TaskCardState extends State<TaskCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.taskItem.title ?? '',
-                    style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        overflow: TextOverflow.ellipsis),
-                    maxLines: 1,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Row(
-                  children: [
-                    const ImageIcon(
-                      size: 18,
-                        AssetImage('assets/images/icon/ic_date.png'),color: Colors.black54,),
-                    const SizedBox(width: 2),
-                    Text(
-                      '${widget.taskItem.createdDate}',
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      child: Card(
+        shadowColor: Colors.black26,
+        elevation: 5,
+        surfaceTintColor: const Color(0xfffaf8f6),
+        margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.taskItem.title ?? '',
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          overflow: TextOverflow.ellipsis),
+                      maxLines: 1,
                     ),
-                  ],
-                ),
-                const SizedBox(width: 5),
-              ],
-            ),
-            Text(widget.taskItem.description ?? ' '),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 5),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  decoration: BoxDecoration(
-                    color:
-                        StatusBackgroundColors.getColor(widget.taskItem.status),
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 2,
-                        offset: const Offset(0, 3),
+                  ),
+                  const SizedBox(width: 10),
+                  Row(
+                    children: [
+                      const ImageIcon(
+                        size: 18,
+                          AssetImage('assets/images/icon/ic_date.png'),color: Colors.black54,),
+                      const SizedBox(width: 2),
+                      Text(
+                        '${widget.taskItem.createdDate}',
                       ),
                     ],
                   ),
-                  child: Text(
-                    widget.taskItem.status ?? '',
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14),
+                  const SizedBox(width: 5),
+                ],
+              ),
+              Text(widget.taskItem.description ?? ' '),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(right: 5),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color:
+                          StatusBackgroundColors.getColor(widget.taskItem.status),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          blurRadius: 2,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      widget.taskItem.status ?? '',
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14),
+                    ),
                   ),
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: () {
-                    _showUpdateStatusDialog(widget.taskItem.sId!);
-                  },
-                  // icon: const Icon(Icons.edit),
-                  icon: const ImageIcon(
-                      AssetImage('assets/images/icon/ic_edit.png')),
-                ),
-                IconButton(
-                  onPressed: () {
-                    _deleteTaskById(widget.taskItem.sId!);
-                  },
-                  icon: const ImageIcon(
-                      size: 22, AssetImage('assets/images/icon/ic_delete.png')),
-                ),
-              ],
-            )
-          ],
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      _showUpdateStatusDialog(widget.taskItem.sId!);
+                    },
+                    // icon: const Icon(Icons.edit),
+                    icon: const ImageIcon(
+                        AssetImage('assets/images/icon/ic_edit.png')),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      _deleteTaskById(widget.taskItem.sId!);
+                    },
+                    icon: const ImageIcon(
+                        size: 22, AssetImage('assets/images/icon/ic_delete.png')),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

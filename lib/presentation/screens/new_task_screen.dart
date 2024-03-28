@@ -96,6 +96,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         },
         child: const Icon(
           Icons.add,
+          color: Colors.white,
         ),
       ),
     );

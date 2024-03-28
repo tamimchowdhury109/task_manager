@@ -35,6 +35,7 @@ PreferredSizeWidget get profileAppBar {
                   AuthController.userData?.fullName ?? 'Name',
                   style: const TextStyle(
                     fontSize: 16,
+                    color: Colors.white
                   ),
                 ),
                 Text(
@@ -42,6 +43,7 @@ PreferredSizeWidget get profileAppBar {
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
+                    color: Colors.white
                   ),
                 ),
               ],
@@ -56,7 +58,7 @@ PreferredSizeWidget get profileAppBar {
                         builder: (context) => const SignInScreen()),
                     (route) => false);
               },
-              icon: const Icon(Icons.login_outlined)),
+              icon: const Icon(Icons.login_outlined),color: Colors.white,),
         ],
       ),
     ),
