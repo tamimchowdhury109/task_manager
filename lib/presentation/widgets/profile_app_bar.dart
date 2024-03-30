@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:task_manager/app.dart';
@@ -15,7 +13,7 @@ PreferredSizeWidget get profileAppBar {
     backgroundColor: AppColors.themeColor,
     title: GestureDetector(
       onTap: () {
-        Navigator.pushReplacement(
+        Navigator.push(
             TaskManager.navigatorKey.currentState!.context,
             MaterialPageRoute(
                 builder: (context) => const UpdateProfileScreen()));

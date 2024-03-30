@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:task_manager/presentation/controllers/count_task_by_status_controller.dart';
 import 'package:task_manager/presentation/screens/add_new_task_screen.dart';
 import 'package:task_manager/presentation/screens/data/models/count_by_status_wrapper.dart';
+import 'package:task_manager/presentation/screens/data/models/task_count_by_status_data.dart';
 import 'package:task_manager/presentation/screens/data/models/task_list_wrapper.dart';
 import 'package:task_manager/presentation/screens/data/services/network_caller.dart';
 import 'package:task_manager/presentation/screens/data/utils/urls.dart';
@@ -20,9 +25,7 @@ class NewTaskScreen extends StatefulWidget {
 }
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
-  bool _getAllTaskCountByStatusInProgress = false;
   bool _getNewTaskListInProgress = false;
-  CountByStatusWrapper _countByStatusWrapper = CountByStatusWrapper();
   TaskListWrapper _newTaskListWrapper = TaskListWrapper();
 
   @override
@@ -32,7 +35,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   }
 
   void _getDataFromApis() {
-    _getAllTaskCountByStatus();
+    Get.find<CountTaskByStatusController>().getCountByTaskStatus();
     _getAllNewTaskList();
   }
 
@@ -47,10 +50,14 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
           },
           child: Column(
             children: [
-              Visibility(
-                visible: !_getAllTaskCountByStatusInProgress,
-                replacement: const LinearProgressIndicator(),
-                child: taskCounterSection,
+              GetBuilder<CountTaskByStatusController>(
+                builder: (countTaskByStatusController) {
+                  return Visibility(
+                    visible: countTaskByStatusController.inProgress == false,
+                    replacement: const LinearProgressIndicator(),
+                    child: taskCounterSection(countTaskByStatusController.countByStatusWrapper.listOfTaskByStatusData ?? []),
+                  );
+                },
               ),
               Expanded(
                 child: Visibility(
@@ -102,18 +109,18 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     );
   }
 
-  Widget get taskCounterSection {
+  Widget taskCounterSection(List<TaskCountByStatusData> listOfTaskCountByStatus) {
     return SizedBox(
       height: 90,
       child: ListView.separated(
-        itemCount: _countByStatusWrapper.listOfTaskByStatusData?.length ?? 0,
+        itemCount: listOfTaskCountByStatus.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           return TaskCounterCard(
-              title: _countByStatusWrapper.listOfTaskByStatusData![index].sId ??
+              title: listOfTaskCountByStatus[index].sId ??
                   '',
               amount:
-                  _countByStatusWrapper.listOfTaskByStatusData![index].sum ??
+              listOfTaskCountByStatus[index].sum ??
                       0);
         },
         separatorBuilder: (_, __) {
@@ -125,28 +132,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     );
   }
 
-  Future<void> _getAllTaskCountByStatus() async {
-    _getAllTaskCountByStatusInProgress = true;
-    setState(() {});
-
-    final response = await NetworkCaller.getRequest(Urls.taskCountByStatus);
-
-    if (response.isSuccess) {
-      _countByStatusWrapper =
-          CountByStatusWrapper.fromJson(response.responseBody);
-      _getAllTaskCountByStatusInProgress = false;
-      setState(() {});
-    } else {
-      _getAllTaskCountByStatusInProgress = false;
-      setState(() {});
-      if (mounted) {
-        showSnackBarMessage(
-            context,
-            response.errorMessage ??
-                'Get task count by status has been failed');
-      }
-    }
-  }
 
   Future<void> _getAllNewTaskList() async {
     _getNewTaskListInProgress = true;

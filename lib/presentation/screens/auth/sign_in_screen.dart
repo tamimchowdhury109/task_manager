@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:task_manager/presentation/screens/auth/sign_in_controller.dart';
+import 'package:task_manager/presentation/controllers/sign_in_controller.dart';
 import 'package:task_manager/presentation/screens/auth/sign_up_screen.dart';
 import 'package:task_manager/presentation/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/presentation/widgets/background_widget.dart';
@@ -140,12 +140,12 @@ class _SignInScreenState extends State<SignInScreen> {
                 builder: (context) => const MainBottomNavScreen()),
             (route) => false);
         showSnackBarMessage(
-            context, _signInController.errorMessage, false);
+            context, _signInController.errorMessage ?? 'Login Success!', false);
       }
     } else {
       if (mounted) {
         showSnackBarMessage(
-            context, _signInController.errorMessage, true);
+            context, _signInController.errorMessage ?? 'Login failed! Try Again', true);
       }
     }
   }

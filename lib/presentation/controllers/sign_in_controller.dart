@@ -9,7 +9,7 @@ class SignInController extends GetxController {
   bool _inProgress = false;
   String? _errorMessage;
 
-  String get errorMessage => _errorMessage ?? 'Login Failed! Try Again';
+  String? get errorMessage => _errorMessage;
 
   bool get inProgress => _inProgress;
 

@@ -35,7 +35,7 @@ class _TaskCardState extends State<TaskCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 8),
+      margin: const EdgeInsets.only(top: 2),
       child: Card(
         shadowColor: Colors.black26,
         elevation: 5,
@@ -73,7 +73,8 @@ class _TaskCardState extends State<TaskCard> {
                   const SizedBox(width: 5),
                 ],
               ),
-              Text(widget.taskItem.description ?? ' '),
+              const SizedBox(height: 10),
+              Text(widget.taskItem.description ?? ' ',textAlign: TextAlign.justify,),
               const SizedBox(height: 10),
               Row(
                 children: [
